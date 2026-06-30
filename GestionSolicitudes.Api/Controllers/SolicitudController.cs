@@ -25,14 +25,14 @@ public class SolicitudController : ControllerBase
     {
         var usuarioId = GetUsuarioIdFromToken();
         var resultado = await _solicitudService.CrearSolicitudAsync(request, usuarioId);
-        return CreatedAtAction(nameof(ObtenerSolicitud), new { solicitudId = resultado.SolicitudNumber }, resultado);
+        return CreatedAtAction(nameof(ObtenerSolicitud), new { numeroSolicitud = resultado.SolicitudNumber }, resultado);
     }
 
  
-    [HttpGet("{solicitudId}")]
-    public async Task<IActionResult> ObtenerSolicitud(int solicitudId)
+    [HttpGet("{numeroSolicitud}")]
+    public async Task<IActionResult> ObtenerSolicitud(string numeroSolicitud)
     {
-        var solicitud = await _solicitudService.ObtenerSolicitudAsync(solicitudId);
+        var solicitud = await _solicitudService.ObtenerSolicitudAsync(numeroSolicitud);
         return Ok(solicitud);
     }
 
@@ -47,7 +47,7 @@ public class SolicitudController : ControllerBase
             usuarioId
         );
 
-        return Ok(new { mensaje = "Estado actualizado exitosamente", seguimiento });
+        return Ok(new { mensaje = "Estado actualizado exitosamente a : " + seguimiento.Estado.Nombre});
     }
 
     //helpers

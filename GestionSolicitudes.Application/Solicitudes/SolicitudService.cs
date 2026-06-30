@@ -21,16 +21,7 @@ namespace GestionSolicitudes.Application.Solicitudes
         public async Task<CreateSolicitudResponse> CrearSolicitudAsync(CreateSolicitudRequest request, int usuarioId)
         {
             // Validar que el usuario exista y esté activo
-            var usuario = await _context.Usuarios.FindAsync(usuarioId);
-            if (usuario == null)
-            {
-                throw new EntityNotFoundException("Usuario no encontrado");
-            }
-
-            if (!usuario.Activo)
-            {
-                throw new UserNotActiveException("Solo usuarios activos pueden registrar solicitudes");
-            }
+            ValidarUsuarioActivo(usuarioId);
 
             // Validar que el tipo de solicitud exista
             var tipoSolicitud = await _context.TipoSolicitudes.FindAsync(request.TipoId);
@@ -96,7 +87,7 @@ namespace GestionSolicitudes.Application.Solicitudes
 
             return new CreateSolicitudResponse
             {
-                SolicitudNumber = int.Parse(numeroSolicitud),
+                SolicitudNumber = numeroSolicitud,
                 Message = $"Solicitud creada exitosamente con número {numeroSolicitud}"
             };
         }
@@ -104,27 +95,47 @@ namespace GestionSolicitudes.Application.Solicitudes
     
     
   
-        public async Task<Solicitud> ObtenerSolicitudAsync(int solicitudId)
+        public async Task<SolicitudDetailResponse> ObtenerSolicitudAsync(string numeroSolicitud)
         {
-            var solicitud = await _context.Solicitudes
-                .Include(s => s.Usuario)
-                .Include(s => s.TipoSolicitud)
-                .Include(s => s.Estado)
-                .Include(s => s.Seguimientos)
-                .FirstOrDefaultAsync(s => s.Id == solicitudId);
+            var solicitudDto = await _context.Solicitudes
+                .Where(s => s.Numero == numeroSolicitud)
+                .Select(s => new SolicitudDetailResponse
+                {
+                    Id = s.Id,
+                    Numero = s.Numero,
+                    FechaSolicitud = s.FechaSolicitud,
+                    Observaciones = s.Observaciones,
+                    UsuarioNombre = s.Usuario.NombreUsuario,
+                    EstadoNombre = s.Estado.Nombre,
+                    TipoNombre = s.TipoSolicitud.Nombre,
+                    Seguimientos = s.Seguimientos
+                        .Select(se => new SeguimientoDto
+                        {
+                            EstadoNombre = se.Estado.Nombre,
+                            FechaSeguimiento = se.FechaSeguimiento,
+                            UsuarioNombre = se.Usuario.NombreUsuario,
+                            Comentario = se.Comentario
+                        })
+                        .OrderBy(se => se.FechaSeguimiento)
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
 
-            if (solicitud == null)
+            if (solicitudDto == null)
             {
                 throw new EntityNotFoundException("Solicitud no encontrada");
             }
 
-            return solicitud;
+            return solicitudDto;
         }
 
     
         public async Task<Seguimiento> CambiarEstadoAsync(int solicitudId, int nuevoEstadoId, string comentario, int usuarioId)
         {
+            ValidarUsuarioActivo(usuarioId);
             var solicitud = await _context.Solicitudes.FindAsync(solicitudId);
+
+            
             if (solicitud == null)
             {
                 throw new EntityNotFoundException("Solicitud no encontrada");
@@ -171,6 +182,20 @@ namespace GestionSolicitudes.Application.Solicitudes
             var timestamp = DateTime.Now.Ticks;
             var numeroAleatorio = Random.Shared.Next(1000, 9999);
             return $"{DateTime.Now:yyyyMMdd}{timestamp % 10000:D4}{numeroAleatorio}";
+        }
+
+        private void ValidarUsuarioActivo(int usuarioId)
+        {
+            var usuario = _context.Usuarios.Find(usuarioId);
+            if (usuario == null)
+            {
+                throw new EntityNotFoundException("Usuario no encontrado");
+            }
+
+            if (!usuario.Activo)
+            {
+                throw new UserNotActiveException("Solo usuarios activos pueden realizar esta acción");
+            }
         }
 
 

@@ -7,6 +7,7 @@ using GestionSolicitudes.Application.Auth;
 using GestionSolicitudes.Application.Solicitudes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +41,12 @@ builder.Services.AddAuthentication(options =>
 // Add services to the container.
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(o =>
+    {
+        o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        o.JsonSerializerOptions.PropertyNamingPolicy = null;
+    });
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -67,7 +73,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddControllers();
 builder.Services.AddDbContext<PruebaTecnicaDbContext>(options =>
     options.UseSqlServer(connectionString, sqlOptions => 
         sqlOptions.MigrationsAssembly("GestionSolicitudes.Infrastructure")));

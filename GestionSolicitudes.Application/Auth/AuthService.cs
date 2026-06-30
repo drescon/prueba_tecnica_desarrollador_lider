@@ -44,7 +44,7 @@ namespace GestionSolicitudes.Application.Auth
             }
 
             // Generate and return token
-            return _tokenService.GenerateToken(user.NombreUsuario, user.Rol.Nombre);
+            return _tokenService.GenerateToken(user);
         }
 
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
