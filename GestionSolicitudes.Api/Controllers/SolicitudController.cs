@@ -30,6 +30,7 @@ public class SolicitudController : ControllerBase
 
  
     [HttpGet("{numeroSolicitud}")]
+    [Authorize(Roles = "Administrador,Auditor,Soporte")]
     public async Task<IActionResult> ObtenerSolicitud(string numeroSolicitud)
     {
         var solicitud = await _solicitudService.ObtenerSolicitudAsync(numeroSolicitud);
@@ -37,6 +38,7 @@ public class SolicitudController : ControllerBase
     }
 
     [HttpPut("{solicitudId}/estado")]
+    [Authorize(Roles = "Administrador,Auditor,Soporte")]
     public async Task<IActionResult> CambiarEstado(int solicitudId, [FromBody] CambiarEstadoRequest request)
     {
         var usuarioId = GetUsuarioIdFromToken();
