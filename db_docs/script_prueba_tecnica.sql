@@ -9,9 +9,18 @@ CREATE TABLE [Roles] (
 )
 GO
 
+INSERT INTO [Roles] ([nombre], [fecha_creacion], [fecha_modificacion])
+VALUES 
+    ('Administrador', GETDATE(), NULL),
+    ('Usuario', GETDATE(), NULL),
+    ('Auditor', GETDATE(), NULL),
+    ('Soporte', GETDATE(), NULL);
+GO
+
 CREATE TABLE [Usuarios] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [nombre_usuario] varchar(100) UNIQUE,
+  [contrasenia] varchar(100) ,
   [rol_id] int,
   [activo] bit,
   [fecha_creacion] datetime DEFAULT (GETDATE()),
@@ -27,14 +36,40 @@ CREATE TABLE [Estados] (
 )
 GO
 
+INSERT INTO [Estados] ([nombre], [fecha_creacion], [fecha_modificacion])
+VALUES 
+    ('Pendiente', GETDATE(), NULL),
+    ('En Proceso', GETDATE(), NULL),
+    ('Aprobado', GETDATE(), NULL),
+    ('Rechazado', GETDATE(), NULL),
+    ('Cerrado', GETDATE(), NULL);
+GO
+
+CREATE TABLE [TipoSolicitud] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [nombre] varchar(50) UNIQUE,
+  [fecha_creacion] datetime DEFAULT (GETDATE()),
+  [fecha_modificacion] datetime
+)
+GO
+
+INSERT INTO [TipoSolicitud] ([nombre], [fecha_creacion], [fecha_modificacion])
+VALUES 
+    ('Soporte Técnico', GETDATE(), NULL),
+    ('Solicitud de Acceso', GETDATE(), NULL),
+    ('Requerimiento de Software', GETDATE(), NULL),
+    ('Reporte de Incidencia', GETDATE(), NULL),
+    ('Otros', GETDATE(), NULL);
+GO
+
 CREATE TABLE [Solicitudes] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [numero] varchar(50) UNIQUE,
   [fecha_solicitud] datetime DEFAULT (GETDATE()),
   [usuario_id] int,
-  [tipo] varchar(50),
+  [tipo_id] int,
   [estado_id] int,
-  [observaciones] text,
+  [observaciones] text not null,
   [fecha_creacion] datetime DEFAULT (GETDATE()),
   [fecha_modificacion] datetime
 )
@@ -125,6 +160,9 @@ GO
 ALTER TABLE [Solicitudes] ADD FOREIGN KEY ([estado_id]) REFERENCES [Estados] ([id])
 GO
 
+ALTER TABLE [Solicitudes] ADD FOREIGN KEY ([tipo_id]) REFERENCES [TipoSolicitud] ([id])
+GO
+
 ALTER TABLE [Seguimientos] ADD FOREIGN KEY ([solicitud_id]) REFERENCES [Solicitudes] ([id])
 GO
 
@@ -133,3 +171,6 @@ GO
 
 ALTER TABLE [Seguimientos] ADD FOREIGN KEY ([estado_id]) REFERENCES [Estados] ([id])
 GO
+
+
+
