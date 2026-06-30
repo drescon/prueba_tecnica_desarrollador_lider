@@ -1,0 +1,6 @@
+@GestionSolicitudes.Api_HostAddress = http://localhost:5052
+
+GET {{GestionSolicitudes.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

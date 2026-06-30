@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="GestionSolicitudes.Api/GestionSolicitudes.Api.csproj" />
+  <Project Path="GestionSolicitudes.Application/GestionSolicitudes.Application.csproj" />
+  <Project Path="GestionSolicitudes.Infrastructure/GestionSolicitudes.Infrastructure.csproj" />
+</Solution>
