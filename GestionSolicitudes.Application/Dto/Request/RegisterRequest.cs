@@ -1,4 +1,4 @@
-namespace GestionSolicitudes.Application.dto.request
+namespace GestionSolicitudes.Application.Dto.Request
 {
     public record RegisterRequest
     {

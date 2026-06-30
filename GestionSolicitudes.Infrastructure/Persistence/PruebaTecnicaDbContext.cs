@@ -13,6 +13,7 @@ namespace GestionSolicitudes.Infrastructure.Persistence
         public DbSet<Rol> Roles { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Estado> Estados { get; set; }
+        public DbSet<TipoSolicitud> TipoSolicitudes { get; set; }
         public DbSet<Solicitud> Solicitudes { get; set; }
         public DbSet<Seguimiento> Seguimientos { get; set; }
 
@@ -59,6 +60,18 @@ namespace GestionSolicitudes.Infrastructure.Persistence
                 entity.HasIndex(e => e.Nombre).IsUnique();
             });
 
+            // Configuraciones para la tabla TipoSolicitud
+            modelBuilder.Entity<TipoSolicitud>(entity =>
+            {
+                entity.ToTable("TipoSolicitud");
+                entity.HasKey(e => e.Id).HasName("PK_TipoSolicitud");
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Nombre).HasColumnName("nombre").HasMaxLength(50).IsRequired();
+                entity.Property(e => e.FechaCreacion).HasColumnName("fecha_creacion").HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.FechaModificacion).HasColumnName("fecha_modificacion");
+                entity.HasIndex(e => e.Nombre).IsUnique();
+            });
+
             // Configuraciones para la tabla Solicitudes
             modelBuilder.Entity<Solicitud>(entity =>
             {
@@ -68,9 +81,9 @@ namespace GestionSolicitudes.Infrastructure.Persistence
                 entity.Property(e => e.Numero).HasColumnName("numero").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.FechaSolicitud).HasColumnName("fecha_solicitud").HasDefaultValueSql("GETDATE()");
                 entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
-                entity.Property(e => e.Tipo).HasColumnName("tipo").HasMaxLength(50);
+                entity.Property(e => e.TipoId).HasColumnName("tipo_id");
                 entity.Property(e => e.EstadoId).HasColumnName("estado_id");
-                entity.Property(e => e.Observaciones).HasColumnName("observaciones");
+                entity.Property(e => e.Observaciones).HasColumnName("observaciones").IsRequired();
                 entity.Property(e => e.FechaCreacion).HasColumnName("fecha_creacion").HasDefaultValueSql("GETDATE()");
                 entity.Property(e => e.FechaModificacion).HasColumnName("fecha_modificacion");
                 entity.HasIndex(e => e.Numero).IsUnique();
@@ -79,6 +92,11 @@ namespace GestionSolicitudes.Infrastructure.Persistence
                 entity.HasOne(d => d.Usuario)
                     .WithMany(p => p.Solicitudes)
                     .HasForeignKey(d => d.UsuarioId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(d => d.TipoSolicitud)
+                    .WithMany(p => p.Solicitudes)
+                    .HasForeignKey(d => d.TipoId)
                     .OnDelete(DeleteBehavior.Restrict);
                     
                 entity.HasOne(d => d.Estado)

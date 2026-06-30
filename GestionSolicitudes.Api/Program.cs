@@ -4,7 +4,9 @@ using GestionSolicitudes.Api.Middlewares;
 using System.Text;
 using GestionSolicitudes.Infrastructure.Persistence;
 using GestionSolicitudes.Application.Auth;
+using GestionSolicitudes.Application.Solicitudes;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +42,31 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Ingresa tu token: Bearer {token}"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            new string[] {}
+        }
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddDbContext<PruebaTecnicaDbContext>(options =>
     options.UseSqlServer(connectionString, sqlOptions => 
@@ -49,6 +75,7 @@ builder.Services.AddDbContext<PruebaTecnicaDbContext>(options =>
 // Register authentication services
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<SolicitudService>();
 
 var app = builder.Build();
 

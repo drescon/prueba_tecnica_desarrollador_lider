@@ -1,9 +1,7 @@
 
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
-using GestionSolicitudes.Application.dto.response;
+using GestionSolicitudes.Application.Dto.Response;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 

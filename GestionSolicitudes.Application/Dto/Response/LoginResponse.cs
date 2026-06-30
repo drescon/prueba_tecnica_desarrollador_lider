@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace GestionSolicitudes.Application.dto.response
+namespace GestionSolicitudes.Application.Dto.Response
 {
     public partial record LoginResponse
     {

@@ -1,6 +1,40 @@
 @GestionSolicitudes.Api_HostAddress = http://localhost:5052
+@token = your_jwt_token_here
 
 GET {{GestionSolicitudes.Api_HostAddress}}/weatherforecast/
 Accept: application/json
+
+###
+
+# ==================== SOLICITUDES ====================
+
+### Crear nueva solicitud
+POST {{GestionSolicitudes.Api_HostAddress}}/api/solicitudes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "tipoId": 1,
+  "observaciones": "Esta es una solicitud de prueba"
+}
+
+###
+
+### Obtener detalles de una solicitud
+GET {{GestionSolicitudes.Api_HostAddress}}/api/solicitudes/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+
+### Cambiar estado de una solicitud
+PUT {{GestionSolicitudes.Api_HostAddress}}/api/solicitudes/1/estado
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "estadoId": 2,
+  "comentario": "Cambio de estado de prueba"
+}
 
 ###

@@ -1,10 +1,5 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using GestionSolicitudes.Application.Exceptions;
 
 namespace GestionSolicitudes.Api.Middlewares;
@@ -44,6 +39,34 @@ public class GlobalExceptionHandler : IExceptionHandler
                 httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
                 problemDetails.Status = StatusCodes.Status403Forbidden;
                 problemDetails.Title = "Acceso Prohibido";
+                problemDetails.Detail = exception.Message;
+                break;
+
+            case EntityNotFoundException:
+                httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+                problemDetails.Status = StatusCodes.Status404NotFound;
+                problemDetails.Title = "Entidad No Encontrada";
+                problemDetails.Detail = exception.Message;
+                break;
+
+            case DuplicateRequestException:
+                httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
+                problemDetails.Status = StatusCodes.Status409Conflict;
+                problemDetails.Title = "Solicitud Duplicada";
+                problemDetails.Detail = exception.Message;
+                break;
+
+            case InvalidStateTransitionException:
+                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                problemDetails.Status = StatusCodes.Status400BadRequest;
+                problemDetails.Title = "Transición de Estado Inválida";
+                problemDetails.Detail = exception.Message;
+                break;
+
+            case MissingObservationException:
+                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                problemDetails.Status = StatusCodes.Status400BadRequest;
+                problemDetails.Title = "Observación Requerida";
                 problemDetails.Detail = exception.Message;
                 break;
 

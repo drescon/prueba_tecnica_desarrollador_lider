@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GestionSolicitudes.Application.dto.request;
-using GestionSolicitudes.Application.dto.response;
+
+using GestionSolicitudes.Application.Dto.Request;
+using GestionSolicitudes.Application.Dto.Response;
 using GestionSolicitudes.Application.Auth;
 using Microsoft.AspNetCore.Mvc;
 

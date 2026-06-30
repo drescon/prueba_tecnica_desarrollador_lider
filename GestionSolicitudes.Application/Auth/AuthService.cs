@@ -1,7 +1,7 @@
 
 using GestionSolicitudes.Infrastructure.Persistence;
-using GestionSolicitudes.Application.dto.request;
-using GestionSolicitudes.Application.dto.response;
+using GestionSolicitudes.Application.Dto.Request;
+using GestionSolicitudes.Application.Dto.Response;
 using GestionSolicitudes.Application.Exceptions;
 using GestionSolicitudes.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;

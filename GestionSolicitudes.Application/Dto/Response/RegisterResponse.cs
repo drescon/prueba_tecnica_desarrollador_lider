@@ -1,4 +1,4 @@
-namespace GestionSolicitudes.Application.dto.response
+namespace GestionSolicitudes.Application.Dto.Response
 {
     public record RegisterResponse
     {

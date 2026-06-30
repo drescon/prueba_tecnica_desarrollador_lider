@@ -15,17 +15,19 @@ namespace GestionSolicitudes.Infrastructure.Entities;
         public DateTime FechaSolicitud { get; set; }
         public int UsuarioId { get; set; }
         
-        [MaxLength(50)]
-        public string Tipo { get; set; } = null!;
+        public int TipoId { get; set; }
         
         public int EstadoId { get; set; }
-        public string? Observaciones { get; set; }
+        public string Observaciones { get; set; } = null!;
         
         public DateTime FechaCreacion { get; set; }
         public DateTime? FechaModificacion { get; set; }
 
         [ForeignKey(nameof(UsuarioId))]
         public virtual Usuario Usuario { get; set; } = null!;
+        
+        [ForeignKey(nameof(TipoId))]
+        public virtual TipoSolicitud TipoSolicitud { get; set; } = null!;
         
         [ForeignKey(nameof(EstadoId))]
         public virtual Estado Estado { get; set; } = null!;
